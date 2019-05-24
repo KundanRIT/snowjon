@@ -6,7 +6,7 @@ import 'foodcontrol.dart';
 class FoodManager extends StatefulWidget {
   final String startingFood;
 
-  FoodManager(this.startingFood);
+  FoodManager({this.startingFood: 'Food'});
 
   @override
   State<StatefulWidget> createState() {
@@ -15,11 +15,11 @@ class FoodManager extends StatefulWidget {
 }
 
 class _FoodManagerState extends State<FoodManager> {
-  List<String> _foods = [];
+  List<Map<String, String>> _foods = [];
 
   @override
   void initState() {
-    _foods.add(widget.startingFood + ' ' + (_foods.length + 1).toString());
+//    _foods.add(widget.startingFood + ' ' + (_foods.length + 1).toString());
     super.initState();
   }
 
@@ -39,7 +39,10 @@ class _FoodManagerState extends State<FoodManager> {
 
   void _addFood() {
     setState(() {
-      _foods.add(widget.startingFood + ' ' + (_foods.length + 1).toString());
+      _foods.add({
+        'title': widget.startingFood + ' ' + (_foods.length + 1).toString(),
+        'imageUrl': 'assets/curry.jpg'
+      });
     });
   }
 

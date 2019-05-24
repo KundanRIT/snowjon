@@ -9,7 +9,7 @@ class FoodControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
+    return ButtonBar(alignment: MainAxisAlignment.center, children: [
       RaisedButton(
         child: Text('Add Food'),
         onPressed: () {
