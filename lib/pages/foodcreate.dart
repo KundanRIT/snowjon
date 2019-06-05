@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CreateFood extends StatefulWidget {
-  final Function _addFood;
+  final Function addFood, updateFood;
+  final Map<String, dynamic> food;
+  final int index;
 
-  CreateFood(this._addFood);
+  CreateFood({this.addFood, this.updateFood, this.food, this.index});
 
   @override
   State<StatefulWidget> createState() {
@@ -12,70 +14,99 @@ class CreateFood extends StatefulWidget {
 }
 
 class _CreateFoodState extends State<CreateFood> {
-  String title = "";
-  String description = "";
-  double price = 0;
+  final Map<String, dynamic> _newFood = {
+    'title': '',
+    'description': '',
+    'price': 0.0,
+    'imageUrl': 'assets/curry.jpg'
+  };
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget _buildTitleTextField() {
-    return TextField(
-      decoration: InputDecoration(labelText: "Food Title"),
-      onChanged: (String title) {
-        this.title = title;
+    return TextFormField(
+      decoration: InputDecoration(labelText: 'Food Title'),
+      initialValue: widget.food == null ? '' : widget.food['title'],
+      validator: (String title) {
+        if (title.trim().isEmpty) {
+          return 'Title is Required.';
+        }
+      },
+      onSaved: (String title) {
+        _newFood['title'] = title;
       },
     );
   }
 
   Widget _buildDescriptionTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(labelText: "Food Description"),
+      initialValue: widget.food == null ? "" : widget.food['description'],
       maxLines: 4,
-      onChanged: (String description) {
-        this.description = description;
+      onSaved: (String description) {
+        _newFood['description'] = description;
       },
     );
   }
 
   Widget _buildPriceTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(labelText: "Food Price"),
+      initialValue: widget.food == null ? "" : widget.food['price'],
       keyboardType: TextInputType.number,
-      onChanged: (String price) {
-        this.price = double.parse(price);
+      onSaved: (String price) {
+        _newFood['price'] = price;
       },
     );
   }
 
   void _submitForm() {
-    final Map<String, dynamic> newFood = {
-      'title': title,
-      'description': description,
-      'price': price,
-      'imageUrl': 'assets/curry.jpg'
-    };
-    widget._addFood(newFood);
-    Navigator.pushReplacementNamed(context, 'food');
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      if (widget.food == null)
+        widget.addFood(_newFood);
+      else
+        widget.updateFood(_newFood, widget.index);
+      Navigator.pushReplacementNamed(context, 'food');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: ListView(
-        children: <Widget>[
-          _buildTitleTextField(),
-          _buildDescriptionTextField(),
-          _buildPriceTextField(),
-          SizedBox(
-            height: 10.0,
+    Widget form = GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: <Widget>[
+              _buildTitleTextField(),
+              _buildDescriptionTextField(),
+              _buildPriceTextField(),
+              SizedBox(
+                height: 10.0,
+              ),
+              RaisedButton(
+                child: Text('Save'),
+                color: Theme.of(context).primaryColor,
+                textColor: Colors.white,
+                onPressed: _submitForm,
+              ),
+            ],
           ),
-          RaisedButton(
-            child: Text('Save'),
-            color: Theme.of(context).primaryColor,
-            textColor: Colors.white,
-            onPressed: _submitForm,
-          )
-        ],
+        ),
       ),
     );
+    if (widget.food == null)
+      return form;
+    else
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Edit Food'),
+        ),
+        body: form,
+      );
   }
 }

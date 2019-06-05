@@ -28,7 +28,8 @@ class _MyApp extends State<MyApp> {
           brightness: Brightness.light),
       routes: {
         'food': (BuildContext context) => FoodsPage(_foods),
-        'managefood': (BuildContext context) => ManageFood(_addFood)
+        'managefood': (BuildContext context) =>
+            ManageFood(_addFood, _updateFood, _foods)
       },
     );
   }
@@ -36,6 +37,12 @@ class _MyApp extends State<MyApp> {
   void _addFood(Map<String, dynamic> newFood) {
     setState(() {
       _foods.add(newFood);
+    });
+  }
+
+  void _updateFood(Map<String, dynamic> food, int index) {
+    setState(() {
+      _foods[index] = food;
     });
   }
 }

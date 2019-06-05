@@ -31,36 +31,37 @@ class Food extends StatelessWidget {
           icon: Icon(Icons.favorite_border),
           color: Colors.red,
           onPressed: () {},
-        )
+        ),
       ],
     );
   }
 
   Widget _buildFood(BuildContext context, int index) {
     return Card(
-        child: Column(
-      children: <Widget>[
-        Image.asset(_foods[index]['imageUrl']),
-        SizedBox(
-          height: 10.0,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TitleTextWidget(_foods[index]['title']),
-            SizedBox(
-              width: 10.0,
-            ),
-            PriceTagWidget(_foods[index]['price'].toString())
-          ],
-        ),
-        SizedBox(
-          height: 10.0,
-        ),
-        GeoTagWidget('Taste of India, Rochester NY'),
-        _buildButtonBar(context, index)
-      ],
-    ));
+      child: Column(
+        children: <Widget>[
+          Image.asset(_foods[index]['imageUrl']),
+          SizedBox(
+            height: 10.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TitleTextWidget(_foods[index]['title']),
+              SizedBox(
+                width: 10.0,
+              ),
+              PriceTagWidget(_foods[index]['price'].toString())
+            ],
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          GeoTagWidget('Taste of India, Rochester NY'),
+          _buildButtonBar(context, index)
+        ],
+      ),
+    );
   }
 
   @override

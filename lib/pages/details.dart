@@ -49,6 +49,16 @@ class DetailsPage extends StatelessWidget {
             height: 10,
           ),
           GeoTagWidget('Taste of India, Rochester NY'),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            _food['description'],
+            style: TextStyle(
+                fontSize: 18,
+                fontFamily: 'Oswald',
+                fontStyle: FontStyle.italic),
+          ),
           Container(
             child: _buildButtonBar(context),
           )

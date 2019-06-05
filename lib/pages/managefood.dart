@@ -4,9 +4,10 @@ import 'allfood.dart';
 import 'foodcreate.dart';
 
 class ManageFood extends StatelessWidget {
-  final Function _addFood;
+  final List<Map<String, dynamic>> _foods;
+  final Function _addFood, _updateFood;
 
-  ManageFood(this._addFood);
+  ManageFood(this._addFood, this._updateFood, this._foods);
 
   Widget _buildTabbar() {
     return AppBar(
@@ -28,7 +29,6 @@ class ManageFood extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -49,7 +49,10 @@ class ManageFood extends StatelessWidget {
         ),
         appBar: _buildTabbar(),
         body: TabBarView(
-          children: <Widget>[CreateFood(_addFood), AllFood()],
+          children: <Widget>[
+            CreateFood(addFood: _addFood),
+            AllFood(_updateFood, _foods)
+          ],
         ),
       ),
     );
