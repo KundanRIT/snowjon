@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:snowjon/pages/details.dart';
-import 'package:snowjon/ui_elements/pricetag.dart';
-import 'package:snowjon/ui_elements/titletext.dart';
+import 'package:snowjon/scope-models/foodmodel.dart';
+import 'package:snowjon/widgets/ui_elements/geotag.dart';
+import 'package:snowjon/widgets/ui_elements/pricetag.dart';
+import 'package:snowjon/widgets/ui_elements/titletext.dart';
 
-import 'package:snowjon/ui_elements/geotag.dart';
+class FoodWidget extends StatelessWidget {
+  final FoodModel _model;
 
-class Food extends StatelessWidget {
-  final List<Map<String, dynamic>> _foods;
-
-  Food(this._foods);
+  FoodWidget(this._model);
 
   Widget _buildButtonBar(BuildContext context, int index) {
     return ButtonBar(
@@ -16,21 +15,28 @@ class Food extends StatelessWidget {
       children: <Widget>[
         IconButton(
           icon: Icon(Icons.info),
-          color: Theme.of(context).primaryColor,
-          onPressed: () => Navigator.push<bool>(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          DetailsPage(_foods[index]))).then((value) {
+          color: Theme
+              .of(context)
+              .primaryColor,
+          onPressed: () =>
+              Navigator.pushNamed<bool>(context, '/food/' + index.toString())
+                  .then((value) {
                 if (value) {
-                  _foods.removeAt(index);
+                  _model.selectIndex(index);
+                  _model.deleteFood();
                 }
+                ;
               }),
         ),
         IconButton(
-          icon: Icon(Icons.favorite_border),
+          icon: _model.foods[index].isFavourite
+              ? Icon(Icons.favorite)
+              : Icon(Icons.favorite_border),
           color: Colors.red,
-          onPressed: () {},
+          onPressed: () {
+            _model.selectIndex(index);
+            _model.toggleFavourite();
+          },
         ),
       ],
     );
@@ -40,18 +46,18 @@ class Food extends StatelessWidget {
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset(_foods[index]['imageUrl']),
+          Image.asset(_model.foods[index].imageUrl),
           SizedBox(
             height: 10.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              TitleTextWidget(_foods[index]['title']),
+              TitleTextWidget(_model.foods[index].title),
               SizedBox(
                 width: 10.0,
               ),
-              PriceTagWidget(_foods[index]['price'].toString())
+              PriceTagWidget(_model.foods[index].price.toString())
             ],
           ),
           SizedBox(
@@ -64,15 +70,14 @@ class Food extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (_foods.length > 0) {
-      return ListView.builder(
-        itemBuilder: _buildFood,
-        itemCount: _foods.length,
-      );
-    } else {
-      return Center(child: Text('No Food Cards. Add Some !'));
-    }
+@override
+Widget build(BuildContext context) {
+  if (_model.foods.length > 0) {
+    return ListView.builder(
+      itemBuilder: _buildFood,
+      itemCount: _model.foods.length,
+    );
+  } else {
+    return Center(child: Text('No Food Cards. Add Some !'));
   }
-}
+}}

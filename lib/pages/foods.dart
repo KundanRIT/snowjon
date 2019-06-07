@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:snowjon/scope-models/foodmodel.dart';
 
 import 'package:snowjon/widgets/food.dart';
 
 class FoodsPage extends StatelessWidget {
-  final List<Map<String, dynamic>> _foods;
-
-  FoodsPage(this._foods);
-
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: Column(
@@ -32,12 +30,24 @@ class FoodsPage extends StatelessWidget {
         appBar: AppBar(
           title: Text('My Food List'),
           actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.favorite),
-              onPressed: () {},
-            )
+            ScopedModelDescendant<FoodModel>(
+              builder: (BuildContext context, Widget child, FoodModel model) {
+                return IconButton(
+                  icon: model.showFavouriteOnly
+                      ? Icon(Icons.favorite)
+                      : Icon(Icons.favorite_border),
+                  onPressed: () {
+                    model.toggleDisplayMode();
+                  },
+                );
+              },
+            ),
           ],
         ),
-        body: Food(_foods));
+        body: ScopedModelDescendant<FoodModel>(
+          builder: (BuildContext context, Widget child, FoodModel model) {
+            return FoodWidget(model);
+          },
+        ));
   }
 }
