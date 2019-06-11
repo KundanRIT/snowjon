@@ -4,7 +4,7 @@ import 'package:snowjon/pages/auth.dart';
 import 'package:snowjon/pages/details.dart';
 import 'package:snowjon/pages/foods.dart';
 import 'package:snowjon/pages/managefood.dart';
-import 'package:snowjon/scope-models/foodmodel.dart';
+import 'package:snowjon/scope-models/mainmodel.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,8 +20,9 @@ class MyApp extends StatefulWidget {
 class _MyApp extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<FoodModel>(
-      model: FoodModel(),
+    MainModel model = MainModel();
+    return ScopedModel<MainModel>(
+      model: model,
       child: MaterialApp(
         home: AuthPage(),
         theme: ThemeData(
@@ -29,8 +30,8 @@ class _MyApp extends State<MyApp> {
             accentColor: Colors.deepOrange,
             brightness: Brightness.light),
         routes: {
-          'food': (BuildContext context) => FoodsPage(),
-          'managefood': (BuildContext context) => ManageFood()
+          'food': (BuildContext context) => FoodsPage(model),
+          'managefood': (BuildContext context) => ManageFood(model),
         },
         onGenerateRoute: (RouteSettings settings) {
           final List<String> path = settings.name.split('/');

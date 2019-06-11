@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:snowjon/scope-models/foodmodel.dart';
+import 'package:snowjon/scope-models/mainmodel.dart';
 import 'package:snowjon/widgets/ui_elements/geotag.dart';
 import 'package:snowjon/widgets/ui_elements/pricetag.dart';
 import 'package:snowjon/widgets/ui_elements/titletext.dart';
 
 class FoodWidget extends StatelessWidget {
-  final FoodModel _model;
+  final MainModel _model;
 
   FoodWidget(this._model);
 
@@ -15,9 +15,7 @@ class FoodWidget extends StatelessWidget {
       children: <Widget>[
         IconButton(
           icon: Icon(Icons.info),
-          color: Theme
-              .of(context)
-              .primaryColor,
+          color: Theme.of(context).primaryColor,
           onPressed: () =>
               Navigator.pushNamed<bool>(context, '/food/' + index.toString())
                   .then((value) {
@@ -46,7 +44,12 @@ class FoodWidget extends StatelessWidget {
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset(_model.foods[index].imageUrl),
+          FadeInImage(
+            placeholder: AssetImage('assets/background.jpg'),
+            image: NetworkImage(_model.foods[index].imageUrl),
+            fit: BoxFit.cover,
+            height: 300,
+          ),
           SizedBox(
             height: 10.0,
           ),
@@ -70,14 +73,11 @@ class FoodWidget extends StatelessWidget {
     );
   }
 
-@override
-Widget build(BuildContext context) {
-  if (_model.foods.length > 0) {
+  @override
+  Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: _buildFood,
       itemCount: _model.foods.length,
     );
-  } else {
-    return Center(child: Text('No Food Cards. Add Some !'));
   }
-}}
+}

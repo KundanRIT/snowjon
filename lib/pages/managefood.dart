@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:snowjon/scope-models/mainmodel.dart';
 
 import 'allfood.dart';
 import 'foodcreate.dart';
 
 class ManageFood extends StatelessWidget {
+
+  final MainModel model;
+
+  ManageFood(this.model);
+
   Widget _buildTabbar() {
     return AppBar(
       title: Text('Manage Food'),
@@ -46,7 +52,7 @@ class ManageFood extends StatelessWidget {
         body: TabBarView(
           children: <Widget>[
             CreateFood(),
-            AllFood(),
+            AllFood(model),
           ],
         ),
       ),

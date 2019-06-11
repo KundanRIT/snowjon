@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:snowjon/models/food.dart';
-import 'package:snowjon/scope-models/foodmodel.dart';
+import 'package:snowjon/scope-models/mainmodel.dart';
 
 class CreateFood extends StatefulWidget {
   @override
@@ -15,7 +15,8 @@ class _CreateFoodState extends State<CreateFood> {
     'title': '',
     'description': '',
     'price': 0.0,
-    'imageUrl': 'assets/curry.jpg',
+    'imageUrl':
+        'http://www.northhantsmum.co.uk/wp-content/uploads/sites/3/2018/03/chicken-Katsu.jpg',
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -56,31 +57,70 @@ class _CreateFoodState extends State<CreateFood> {
     );
   }
 
-  void _submitForm(Food food, Function addFood, Function updateFood) {
+  void _submitForm(MainModel model) {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      if (food == null)
-        addFood(Food(
-          title: _newFood['title'],
-          description: _newFood['description'],
-          price: _newFood['price'],
-          imageUrl: _newFood['imageUrl'],
-        ));
+      if (model.selectedFood == null)
+        model.addFood(_newFood).then((bool success) {
+          if (success) {
+            Navigator.pushReplacementNamed(context, 'food');
+          } else {
+            showDialog(
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Error'),
+                  content: Text('Please Try Again'),
+                  actions: <Widget>[
+                    FlatButton(child: Text('Ok!'), onPressed: () {
+                      Navigator.of(context).pop();
+                    },)
+                  ],
+                );
+              },
+              context: context,
+            );
+          }
+        });
       else
-        updateFood(Food(
-          title: _newFood['title'],
-          description: _newFood['description'],
-          price: _newFood['price'],
-          imageUrl: _newFood['imageUrl'],
-        ));
-      Navigator.pushReplacementNamed(context, 'food');
+        model.updateFood(_newFood).then((bool success) {
+          if (success) {
+            Navigator.pushReplacementNamed(context, 'food');
+          } else {
+            showDialog(
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Error'),
+                  content: Text('Please Try Again'),
+                  actions: <Widget>[
+                    FlatButton(child: Text('Ok!'), onPressed: () {
+                      Navigator.of(context).pop();
+                    },)
+                  ],
+                );
+              },
+              context: context,
+            );
+          }
+        });
     }
+  }
+
+  Widget _submitButton(MainModel model) {
+    return model.isLoading
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : RaisedButton(
+            child: Text('Save'),
+            color: Theme.of(context).primaryColor,
+            textColor: Colors.white,
+            onPressed: () => _submitForm(model));
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<FoodModel>(
-      builder: (BuildContext context, Widget child, FoodModel model) {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
         Widget form = GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
@@ -97,16 +137,7 @@ class _CreateFoodState extends State<CreateFood> {
                   SizedBox(
                     height: 10.0,
                   ),
-                  RaisedButton(
-                    child: Text('Save'),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Colors.white,
-                    onPressed: () => _submitForm(
-                          model.selectedFood,
-                          model.addFood,
-                          model.updateFood,
-                        ),
-                  ),
+                  _submitButton(model),
                 ],
               ),
             ),
